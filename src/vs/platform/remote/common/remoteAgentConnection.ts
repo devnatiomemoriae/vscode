@@ -18,6 +18,7 @@ import { IIPCLogger } from 'vs/base/parts/ipc/common/ipc';
 
 const INITIAL_CONNECT_TIMEOUT = 120 * 1000 /* 120s */;
 const RECONNECT_TIMEOUT = 30 * 1000 /* 30s */;
+const HANDSHAKE_TIMEOUT = 30 * 1000 /* 30s */;
 
 export const enum ConnectionType {
 	Management = 1,
@@ -124,7 +125,7 @@ async function connectToRemoteExtensionHostAgent(options: ISimpleConnectionOptio
 				safeDisposeProtocolAndSocket(protocol);
 			}
 			e(error);
-		}, 10000);
+		}, HANDSHAKE_TIMEOUT);
 
 		const messageRegistration = protocol.onControlMessage(async raw => {
 			const msg = <HandshakeMessage>JSON.parse(raw.toString());
